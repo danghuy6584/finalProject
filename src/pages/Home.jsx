@@ -1,11 +1,16 @@
-import React, { Component } from 'react'
+import Banner from "@/component/Banner";
+import Footer from "@/component/Footer";
+import Header from "@/component/Header";
+import { Outlet } from "react-router-dom";
 
-export class Home extends Component {
-  render() {
-    return (
-      <div>Home</div>
-    )
-  }
+export function Home() {
+  return (
+    <>
+    <Header/>
+    <Banner/>
+    <Outlet/>
+    <Footer/>
+    </>
+  );
 }
-
 export default Home;
