@@ -1,0 +1,231 @@
+$glass: rgba(255, 255, 255, 0.2);
+$glass-icon: rgba(255, 255, 255, 0.3);
+$gradient: linear-gradient(35deg, red, purple);
+$option: rgb(12, 23, 45);
+.Usermanage {
+  h1 {
+    color: black;
+    font-size: 36px;
+    text-align: center;
+  }
+  table {
+    background-color: #144272;
+    border-radius: 10px;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    color: #fff;
+    th,
+    td {
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      color: #fff;
+    }
+    button {
+      background-color: red;
+      border-radius: 5px;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: darkred;
+      }
+
+      & + button {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+.Createuser-page{
+    width: 100%;
+    div {
+        font-family: 'itim';
+      }
+      .Auth-form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+    
+      .Auth-form {
+        width: 100%;
+        padding-top: 30px;
+        padding-bottom: 20px;
+        border-radius: 8px;
+      }
+    
+      .Auth-form-content {
+        .form-group {
+          position: relative;
+          width: 100%;
+          a {
+            position: absolute;
+            z-index: 2;
+            left: 50px;
+            top: 56px;
+            color: white;
+            font-size: 20px;
+            display: flex;
+          }
+        }
+      }
+    
+      .Auth-form-title {
+        text-align: center;
+
+        font-size: 48px;
+        font-weight: 400;
+        color: black;
+      }
+      input {
+        background-color: #144272;
+        color: #ffffff;
+        padding: 14px 0px 14px 60.05px;
+        width: 100%;
+        border: 3px solid white;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        margin-top: 5px;
+        font-family: 'itim';
+        font-size: 16px;
+      }
+      input::placeholder {
+        opacity: 1;
+        color: #ffffff;
+        font-family: 'itim';
+      }
+      .icon {
+        position: absolute;
+        top: 38.5%;
+        left: 3%;
+        z-index: 2;
+        font-size: 30px;
+      }
+      label {
+        font-family: 'Itim';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 32px;
+        line-height: 38px;
+        color: #ffffff;
+        display: block;
+      }
+      .d-lg {
+        button {
+          width: 100%;
+          padding: 18px 0px 18px 0px;
+          color: #ffffff;
+          border: 2px;
+          border-radius: 15px;
+          background-color: #2C74B3;
+          font-family: 'itim';
+          font-size: 21px;
+        }
+      }
+    .input-group-re {
+    position: relative;
+    display: inline-block;
+    width: 45%;
+    gap: 5%;
+    margin-left: 5%;
+    .input {
+      transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      background-color: #144272;
+      color: #ffffff;
+      padding: 14px 0px 14px 60.05px;
+      width: 100%;
+      border: 3px solid white;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      margin-top: 5px;
+      font-family: 'itim';
+      font-size: 16px;
+    }
+  
+    .user-label {
+      position: absolute;
+      left: 26px;
+      color: #e8e8e8;
+      pointer-events: none;
+      transform: translateY(1rem);
+      transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+      top: -5px;
+      font-size: 21px;
+    }
+  
+    .input:focus,
+    input:valid {
+      outline: none;
+      border: 3px solid white;
+      background-color: #0A2647;
+    }
+  
+    .input:focus ~ label,
+    input:valid ~ label {
+      transform: translateY(-30%) scale(0.8);
+      background-color: #0A2647;
+      padding: 0 0.2em;
+      color: #ffffff;
+    }
+  }
+  .sm-regis {
+    width: 100%;
+    text-align: center;
+    button {
+      width: 25%;
+      padding: 18px 0px 18px 0px;
+      color: #ffffff;
+      border: 2px;
+      border-radius: 15px;
+      background-color: #2C74B3;
+      font-family: 'itim';
+      font-size: 21px;
+      margin-top: 20px;
+    }
+  }
+  .select-group-re{
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    .category-lable{
+      color: black;
+      font-size: 21px;
+      select {
+      margin-left: 3%;
+      text-align: center;
+      appearance: none;
+      border: 0;
+      outline: 0;
+      font: inherit;
+      width: 30%;
+      height: 100%;
+      padding: 0 4em 0 1em;
+      background: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg)
+          no-repeat right 0.8em center / 1.4em,
+        linear-gradient(to left, $glass-icon 3em, $glass 3em);
+      color: white;
+      border-radius: 0.25em;
+      box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      option {
+        color: inherit;
+        background-color: $option;
+      }
+      &:focus {
+        outline: none;
+      }
+      &::-ms-expand {
+        display: none;
+      }
+    }
+    }
+  }
+}

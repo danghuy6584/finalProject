@@ -49,24 +49,20 @@ function SignUp() {
       flag = false;
       xx = 2;
     }
-  
+      try {
         let { data, error } = await supabase.auth.signUp({
-            email: 'someone@email.com',
-            password: 'OwWSlgvnQlUCpOGcuvwZ'
-        })
-        console.log(data)
-    //   try {
-    //     let { data, error } = await supabase.auth.signUp({
-    //         email: inputs.name,
-    //         password: inputs.password,
-    //         // name: inputs.name,
-    //       })
-    //     console.log(data)
-    //     console.log(error)
-    //     alert("check your email")
-    //   } catch (error) {
-    //     alert(error)
-    //   }
+            email: inputs.email,
+            password: inputs.password,
+            options : {
+              data: {
+                full_name: inputs.name
+              }
+            }
+          })
+        alert("check your email")
+      } catch (error) {
+        alert(error)
+      }
  
   };
   return (

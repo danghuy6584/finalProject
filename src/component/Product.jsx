@@ -1,12 +1,10 @@
 import React from "react";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css';
 
 function Product() {
   return (
     <div>
-      <div className="w-full gap-4 flex-wrap flex justify-center  max-[1072px]:mt-12 z-0">
-        <div className="w-60 p-2 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl z-[-1]">
+      <div className="w-full gap-4 min-h-screen flex-wrap flex justify-center items-center  max-[1072px]:mt-12 z-0">
+        <div className="w-60 p-2 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl ">
           <img
             className="h-40 object-cover rounded-xl"
             src="https://file.hstatic.net/1000075078/article/blog_f80b599183c340bca744c174e7ab2af8.jpg"

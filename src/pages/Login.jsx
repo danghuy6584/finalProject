@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from '@/config/supabaseClient'
 export function Login()   {
     const [inputs, setInputs] = useState({
         email: "",
         password: "",
     });
-    console.log(inputs)
     const handleInput = (e) => {
       const nameInput = e.target.name;
       const value = e.target.value;
@@ -14,7 +14,6 @@ export function Login()   {
     };
     const handleLogin = async (e) => {
       e.preventDefault();
-      console.log("ooke")
       let flag = true;
       let xx = 1;
       console.log(inputs);
@@ -27,11 +26,16 @@ export function Login()   {
         xx = 2;
       }
       if (xx == 1) {
-        const data = {
-          email: inputs.email,
-          password: inputs.password,
-        };
-        console.log(data);
+        try {
+          let { data, error } = await supabase.auth.signInWithPassword({
+              email: inputs.email,
+              password: inputs.password,
+            })
+          console.log(data)
+          alert("check your email")
+        } catch (error) {
+          alert(error)
+        }
       }
     };
     return (
