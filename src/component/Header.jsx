@@ -49,9 +49,10 @@ function Header() {
           ))}
           <Link
             to={"/"}
-            className="btn bg-white text-[#447878] md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static"
+            className="btn bg-white text-[#447878] md:ml-8 font-semibold px-3 py-1 rounded duration-500 relative z-[1] "
           >
             <BellAlertIcon class="h-6 w-6 text-gray-500" />
+            <a className="absolute bottom-4 left-10 text-white z-[2] rounded-full bg-[#A34343] w-6 h-6">2</a>
           </Link>
           <Link
             to={"/Login"}

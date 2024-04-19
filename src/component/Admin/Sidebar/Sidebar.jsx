@@ -22,14 +22,14 @@ export const Sidebar = () => {
   return (
     <>
       <div
-        className=" bars "
+        className=" bars"
         style={expanded ? { left: "60%" } : { left: "5%" }}
         onClick={() => setExpaned(!expanded)}
       >
         <span>{expanded ? <UilMultiply /> : <UilBars />}</span>
       </div>
       <motion.div
-        className="sidebar"
+        className="sidebar min-h-screen"
         variants={sidebarVariants}
         animate={window.innerWidth <= 768 ? `${expanded}` : ""}
       >

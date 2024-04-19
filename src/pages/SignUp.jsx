@@ -9,24 +9,6 @@ function SignUp() {
     email: "",
     password: "",
   });
-//   useEffect(() => {
-//     // Define an async function inside useEffect
-//     async function fetchData() {
-//       try {
-        
-// let { data: menuCoffe, error } = await supabase
-// .from('menuCoffe')
-// .select('*')
-        
-//         console.log(menuCoffe)
-//       } catch (error) {
-//         console.error('Error fetching data:', error);
-//       } 
-//     }
-
-//     fetchData();
-//   }, []);
-
   const handleInput = (e) => {
     const nameInput = e.target.name;
     const value = e.target.value;
