@@ -3,7 +3,6 @@ import './App.css'
 import ManageMenu from './component/Admin/MangeMenu/ManageMenu'
 import Promotion from './component/Admin/Promotion/Promotion'
 import Product from './component/Product'
-import ProductDetail from './component/ProductDetail'
 import Admin from './pages/Admin/Admin'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -15,7 +14,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />}>
           <Route index element={<Product />}/>
-          <Route path="/ProductDetail" element={<ProductDetail/>} />
         </Route>
         <Route path="/Login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />} />
