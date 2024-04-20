@@ -6,12 +6,13 @@ import {
 } from "@heroicons/react/24/solid";
 import {
   Drawer,
-  Button,
   Typography,
-  IconButton,
 } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "swiper/swiper-bundle.css";
+import { useEffect } from "react";
+import { supabase } from '@/config/supabaseClient'
+
 function Header() {
   let Links = [
     { name: "HOME", link: "/" },
@@ -19,9 +20,13 @@ function Header() {
   ];
   let [open, setOpen] = useState(false);
   const [openRight, setOpenRight] = React.useState(false);
+
+  const isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
+  console.log(isLoggedIn);
+
   const openDrawerRight = () => setOpenRight(true);
   const closeDrawerRight = () => setOpenRight(false);
-
+  const navigate = useNavigate();
   const mockData = [
     {
       id: 1,
@@ -64,6 +69,17 @@ function Header() {
       quantity: 3,
     },
   ];
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      localStorage.clear();
+      navigate('/login');
+    } catch (error) {
+      console.error('Error signing out:', error.message);
+    }
+  };
+
   return (
     <div className="shadow-md w-full fixed top-0 left-0 z-[99]">
       <div className="md:flex items-center justify-between bg-[#447878] py-4 md:px-10 px-7">
@@ -121,137 +137,143 @@ function Header() {
             </button>
           </li>
           <li className="md:ml-8 md:my-0 my-7 font-semibold">
-            <Link
-              to={"/Login"}
-              className="btn bg-white text-[#447878] md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static"
-            >
-              LOGIN
-            </Link>
+            {isLoggedIn ? (
+              <button onClick={handleLogout} className="btn bg-white text-[#447878] md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static">
+                LOGOUT
+              </button>
+            ) : (
+              <Link
+                to={"/Login"}
+                className="btn bg-white text-[#447878] md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static"
+              >
+                LOGIN
+              </Link>
+            )}
           </li>
         </ul>
       </div>
       <Drawer
-          placement="right"
-          open={openRight}
-          onClose={closeDrawerRight}
-          className="p-4 "
-          size={300}
+        placement="right"
+        open={openRight}
+        onClose={closeDrawerRight}
+        className="p-4 "
+        size={300}
+      >
+        <Typography
+          className="border-b-[1px] border-black"
+          variant="h5"
+          color="blue-gray"
         >
-          <Typography
-            className="border-b-[1px] border-black"
-            variant="h5"
-            color="blue-gray"
-          >
-            Gio hang
-          </Typography>
-          <div className="mb-6 flex text-left h-2/3 overflow-y-auto border-b-[1px] border-gray-500">
-            <ul className="divide-y divide-gray-200">
-              {mockData.map((item, index) => (
-                <li
-                  key={index}
-                  className="py-4 flex border-b-[1px] border-gray-300"
-                >
-                  <div className="flex-shrink-0 w-24 h-24">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-full object-cover"
-                    />
+          Gio hang
+        </Typography>
+        <div className="mb-6 flex text-left h-2/3 overflow-y-auto border-b-[1px] border-gray-500">
+          <ul className="divide-y divide-gray-200">
+            {mockData.map((item, index) => (
+              <li
+                key={index}
+                className="py-4 flex border-b-[1px] border-gray-300"
+              >
+                <div className="flex-shrink-0 w-24 h-24">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="ml-4 flex-1 flex flex-col border-b-[1px]">
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900">
+                      {item.name}
+                    </h3>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {item.description}
+                    </p>
                   </div>
-                  <div className="ml-4 flex-1 flex flex-col border-b-[1px]">
-                    <div>
-                      <h3 className="text-sm font-medium text-gray-900">
-                        {item.name}
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {item.description}
-                      </p>
-                    </div>
-                    <div className="flex-1 flex flex-col">
-                      <p className="text-sm font-medium text-gray-900">
-                        ${item.price}
-                      </p>
-                    </div>
-                    <div className="">
-                      <label
-                        for="quantity-input"
-                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  <div className="flex-1 flex flex-col">
+                    <p className="text-sm font-medium text-gray-900">
+                      ${item.price}
+                    </p>
+                  </div>
+                  <div className="">
+                    <label
+                      for="quantity-input"
+                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Choose quantity:
+                    </label>
+                    <div class="relative flex items-center max-w-[8rem]">
+                      <button
+                        type="button"
+                        id="decrement-button"
+                        data-input-counter-decrement="quantity-input"
+                        class="bg-gray-100 hover:bg-gray-300 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
                       >
-                        Choose quantity:
-                      </label>
-                      <div class="relative flex items-center max-w-[8rem]">
-                        <button
-                          type="button"
-                          id="decrement-button"
-                          data-input-counter-decrement="quantity-input"
-                          class="bg-gray-100 hover:bg-gray-300 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+                        <svg
+                          class="w-3 h-3 text-gray-900 dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 18 2"
                         >
-                          <svg
-                            class="w-3 h-3 text-gray-900 dark:text-white"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 18 2"
-                          >
-                            <path
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M1 1h16"
-                            />
-                          </svg>
-                        </button>
-                        <input
-                          type="text"
-                          id="quantity-input"
-                          data-input-counter
-                          aria-describedby="helper-text-explanation"
-                          class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          placeholder="999"
-                          required
-                        />
-                        <button
-                          type="button"
-                          id="increment-button"
-                          data-input-counter-increment="quantity-input"
-                          class="bg-gray-100 hover:bg-gray-300 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M1 1h16"
+                          />
+                        </svg>
+                      </button>
+                      <input
+                        type="text"
+                        id="quantity-input"
+                        data-input-counter
+                        aria-describedby="helper-text-explanation"
+                        class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="999"
+                        required
+                      />
+                      <button
+                        type="button"
+                        id="increment-button"
+                        data-input-counter-increment="quantity-input"
+                        class="bg-gray-100 hover:bg-gray-300 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+                      >
+                        <svg
+                          class="w-3 h-3 text-gray-900 dark:text-white"
+                          aria-hidden="true"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 18 18"
                         >
-                          <svg
-                            class="w-3 h-3 text-gray-900 dark:text-white"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 18 18"
-                          >
-                            <path
-                              stroke="currentColor"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M9 1v16M1 9h16"
-                            />
-                          </svg>
-                        </button>
-                      </div>
+                          <path
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 1v16M1 9h16"
+                          />
+                        </svg>
+                      </button>
                     </div>
                   </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="checkout w-full">
-            <h3 className="float-left">
-              Total : <span className="float-right">300</span>
-            </h3>
-            <button
-              type="button"
-              class="w-full text-center  text-white bg-[#f48220] hover:bg-[#f48220]/90 focus:ring-4 focus:outline-none focus:ring-[#f48220]/50 font-medium rounded-lg text-sm px-5 py-2.5  items-center dark:focus:ring-[#f48220]/50 me-2 mb-2"
-            >
-              CHECK OUT
-            </button>
-          </div>
-        </Drawer>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="checkout w-full">
+          <h3 className="float-left">
+            Total : <span className="float-right">300</span>
+          </h3>
+          <button
+            type="button"
+            class="w-full text-center  text-white bg-[#f48220] hover:bg-[#f48220]/90 focus:ring-4 focus:outline-none focus:ring-[#f48220]/50 font-medium rounded-lg text-sm px-5 py-2.5  items-center dark:focus:ring-[#f48220]/50 me-2 mb-2"
+          >
+            CHECK OUT
+          </button>
+        </div>
+      </Drawer>
     </div>
   );
 }

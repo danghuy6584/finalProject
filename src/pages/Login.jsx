@@ -38,6 +38,25 @@ export function Login()   {
         }
       }
     };
+    const handleLoginWithGG = async () => {
+      try {
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent',
+            },
+          },
+        })
+        if (error) {
+          throw error;
+        }
+        localStorage.setItem('isLoggedIn', 'true');
+      } catch (error) {
+        console.error('Error signing in with Google:', error.message);
+      }
+    };
     return (
       <div className="flex w-full h-screen">
         <div className="w-full flex items-center justify-center">
@@ -64,15 +83,17 @@ export function Login()   {
                 />
               </div>
               <div className="mt-8 flex justify-between items-center">
-                <button className="font-medium text-base text-[#447878]">
+                <Link to={"/ForgotPassword"} className="font-medium text-base text-[#447878]">
                   Forgot password
-                </button>
+                </Link>
               </div>
               <div className="mt-8 flex flex-col gap-y-4">
                 <button className="active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4 bg-[#447878] rounded-xl text-white font-bold text-lg"  onClick={handleLogin}>
                   Sign in
                 </button>
-                <button className="flex items-center justify-center gap-2 active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 ">
+                <button
+                onClick={handleLoginWithGG} 
+                className="flex items-center justify-center gap-2 active:scale-[.98] active:duration-75 transition-all hover:scale-[1.01]  ease-in-out transform py-4  rounded-xl text-gray-700 font-semibold text-lg border-2 border-gray-100 ">
                   <svg
                     width="24"
                     height="24"

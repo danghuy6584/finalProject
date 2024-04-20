@@ -7,8 +7,6 @@ function Product() {
     async function fetchData() {
       try {
         let { data: books, error } = await supabase.from("books").select("*");
-
-        console.log(JSON.stringify(books));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
