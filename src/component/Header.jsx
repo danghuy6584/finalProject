@@ -12,12 +12,15 @@ import { Link, useNavigate } from "react-router-dom";
 import "swiper/swiper-bundle.css";
 import { useEffect } from "react";
 import { supabase } from '@/config/supabaseClient'
+import { useStripe } from "@stripe/react-stripe-js";
 
 function Header() {
   let Links = [
     { name: "HOME", link: "/" },
     { name: "SERVICE", link: "/" },
   ];
+  const stripe = useStripe();
+
   let [open, setOpen] = useState(false);
   const [openRight, setOpenRight] = React.useState(false);
 
@@ -77,6 +80,31 @@ function Header() {
       navigate('/login');
     } catch (error) {
       console.error('Error signing out:', error.message);
+    }
+  };
+  const handleCheckout = async () => {
+    const { data, error } = await supabase.functions.invoke('stripe', {
+      body: {
+        products: [
+          {
+            name: 'T-shirt',
+            price: 2000,
+            quantity: 1,
+            image:
+              'https://zqniiryyuwuamggkxgcf.supabase.co/storage/v1/object/public/products/download.jpg',
+          },
+        ],
+      },
+    })
+    console.log(data)
+    if (data) {
+      const test = await stripe.redirectToCheckout({
+        sessionId: data.id,
+      })
+      console.log('🚀 ~ handleAddToCart ~ test:', test)
+    }
+    if (error) {
+      console.error('🚀 ~ handleAddToCart ~ error:', error)
     }
   };
 
@@ -268,6 +296,7 @@ function Header() {
           </h3>
           <button
             type="button"
+            onClick={handleCheckout}
             class="w-full text-center  text-white bg-[#f48220] hover:bg-[#f48220]/90 focus:ring-4 focus:outline-none focus:ring-[#f48220]/50 font-medium rounded-lg text-sm px-5 py-2.5  items-center dark:focus:ring-[#f48220]/50 me-2 mb-2"
           >
             CHECK OUT
