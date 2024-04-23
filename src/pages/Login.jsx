@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from '@/config/supabaseClient'
 export function Login()   {
+  // Hello
     const [inputs, setInputs] = useState({
         email: "",
         password: "",
     });
+    const navigate = useNavigate();
+
     const handleInput = (e) => {
       const nameInput = e.target.name;
       const value = e.target.value;
@@ -30,8 +33,8 @@ export function Login()   {
           let { data, error } = await supabase.auth.signInWithPassword({
               email: inputs.email,
               password: inputs.password,
-            })
-          console.log(data)
+          })
+          navigate('/');
           alert("check your email")
         } catch (error) {
           alert(error)
@@ -52,7 +55,6 @@ export function Login()   {
         if (error) {
           throw error;
         }
-        localStorage.setItem('isLoggedIn', 'true');
       } catch (error) {
         console.error('Error signing in with Google:', error.message);
       }

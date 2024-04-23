@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import { supabase } from "@/config/supabaseClient";
+import { useNavigate } from 'react-router-dom';
 
 function ChangePassword() {
     const [inputs, setInputs] = useState({
@@ -8,6 +9,7 @@ function ChangePassword() {
         password: "",
     });
     const [errorMessage, setErrorMessage] = useState("");
+    const navigate = useNavigate();
 
     const handleInput = (e) => {
       const nameInput = e.target.name;
@@ -30,6 +32,7 @@ function ChangePassword() {
                 email: inputs.email,
                 password: inputs.password
               })
+              navigate('/login');
           alert("oke");
         } catch (error) {
           alert(error);

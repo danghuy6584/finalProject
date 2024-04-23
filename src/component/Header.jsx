@@ -23,10 +23,28 @@ function Header() {
 
   let [open, setOpen] = useState(false);
   const [openRight, setOpenRight] = React.useState(false);
+  const [isLoggedIn , setIsLoggedIn] = useState(false);
+  const [dataUser , setDataUser] = useState([]);
 
-  const isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
-  console.log(isLoggedIn);
+  // const isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
+  // console.log(isLoggedIn);
+  // hello
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = JSON.parse(localStorage.getItem("sb-sbopxwomrmjltrjvurhf-auth-token"))
+        if(res){
+          setIsLoggedIn(true)
+          setDataUser(res)
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
 
+    fetchData();
+  }, []);
+  console.log(dataUser,isLoggedIn)
   const openDrawerRight = () => setOpenRight(true);
   const closeDrawerRight = () => setOpenRight(false);
   const navigate = useNavigate();
@@ -87,11 +105,11 @@ function Header() {
       body: {
         products: [
           {
-            name: 'T-shirt',
-            price: 2000,
+            name: 'Product1',
+            price: 20000,
             quantity: 1,
             image:
-              'https://zqniiryyuwuamggkxgcf.supabase.co/storage/v1/object/public/products/download.jpg',
+            "https://file.hstatic.net/1000075078/article/blog_f80b599183c340bca744c174e7ab2af8.jpg",
           },
         ],
       },
