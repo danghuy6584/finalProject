@@ -4,15 +4,13 @@ import {
   XMarkIcon,
   BellAlertIcon,
 } from "@heroicons/react/24/solid";
-import {
-  Drawer,
-  Typography,
-} from "@material-tailwind/react";
+import { Drawer, Typography } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
 import "swiper/swiper-bundle.css";
 import { useEffect } from "react";
-import { supabase } from '@/config/supabaseClient'
+import { supabase } from "@/config/supabaseClient";
 import { useStripe } from "@stripe/react-stripe-js";
+import { useSelector } from "react-redux";
 
 function Header() {
   let Links = [
@@ -20,22 +18,22 @@ function Header() {
     { name: "SERVICE", link: "/" },
   ];
   const stripe = useStripe();
+  const cart = useSelector((state) => state.cart);
 
   let [open, setOpen] = useState(false);
   const [openRight, setOpenRight] = React.useState(false);
-  const [isLoggedIn , setIsLoggedIn] = useState(false);
-  const [dataUser , setDataUser] = useState([]);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [dataUser, setDataUser] = useState([]);
 
-  // const isLoggedIn = JSON.parse(localStorage.getItem("isLoggedIn"));
-  // console.log(isLoggedIn);
-  // hello
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = JSON.parse(localStorage.getItem("sb-sbopxwomrmjltrjvurhf-auth-token"))
-        if(res){
-          setIsLoggedIn(true)
-          setDataUser(res)
+        const res = JSON.parse(
+          localStorage.getItem("sb-sbopxwomrmjltrjvurhf-auth-token")
+        );
+        if (res) {
+          setIsLoggedIn(true);
+          setDataUser(res);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -44,85 +42,35 @@ function Header() {
 
     fetchData();
   }, []);
-  console.log(dataUser,isLoggedIn)
   const openDrawerRight = () => setOpenRight(true);
   const closeDrawerRight = () => setOpenRight(false);
   const navigate = useNavigate();
-  const mockData = [
-    {
-      id: 1,
-      name: "Product 1",
-      description: "Description of Product 1",
-      price: 10,
-      image: "https://via.placeholder.com/150",
-      quantity: 2,
-    },
-    {
-      id: 2,
-      name: "Product 2",
-      description: "Description of Product 2",
-      price: 15,
-      image: "https://via.placeholder.com/150",
-      quantity: 1,
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      description: "Description of Product 3",
-      price: 20,
-      image: "https://via.placeholder.com/150",
-      quantity: 3,
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      description: "Description of Product 3",
-      price: 20,
-      image: "https://via.placeholder.com/150",
-      quantity: 3,
-    },
-    {
-      id: 3,
-      name: "Product 3",
-      description: "Description of Product 3",
-      price: 20,
-      image: "https://via.placeholder.com/150",
-      quantity: 3,
-    },
-  ];
 
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
       localStorage.clear();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
-      console.error('Error signing out:', error.message);
+      console.error("Error signing out:", error.message);
     }
   };
+  console.log(cart);
   const handleCheckout = async () => {
-    const { data, error } = await supabase.functions.invoke('stripe', {
+    const { data, error } = await supabase.functions.invoke("stripe", {
       body: {
-        products: [
-          {
-            name: 'Product1',
-            price: 20000,
-            quantity: 1,
-            image:
-            "https://file.hstatic.net/1000075078/article/blog_f80b599183c340bca744c174e7ab2af8.jpg",
-          },
-        ],
+        products: cart,
       },
-    })
-    console.log(data)
+    });
+    console.log(data);
     if (data) {
       const test = await stripe.redirectToCheckout({
         sessionId: data.id,
-      })
-      console.log('🚀 ~ handleAddToCart ~ test:', test)
+      });
+      console.log("🚀 ~ handleAddToCart ~ test:", test);
     }
     if (error) {
-      console.error('🚀 ~ handleAddToCart ~ error:', error)
+      console.error("🚀 ~ handleAddToCart ~ error:", error);
     }
   };
 
@@ -142,7 +90,7 @@ function Header() {
           >
             <BellAlertIcon class="h-5 w-5 text-gray-500" />
             <span className="absolute bottom-4 left-8 text-white z-[2] rounded-full bg-[#A34343] w-5 h-5">
-              2
+              {cart.length}
             </span>
           </button>
         </div>
@@ -178,13 +126,17 @@ function Header() {
             >
               <BellAlertIcon class="h-6 w-6 text-gray-500" />
               <span className="absolute bottom-4 left-10 text-white z-[2] rounded-full bg-[#A34343] w-6 h-6">
-                2
+                {cart.length}
               </span>
             </button>
           </li>
+
           <li className="md:ml-8 md:my-0 my-7 font-semibold">
             {isLoggedIn ? (
-              <button onClick={handleLogout} className="btn bg-white text-[#447878] md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static">
+              <button
+                onClick={handleLogout}
+                className="btn bg-white text-[#447878] md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static"
+              >
                 LOGOUT
               </button>
             ) : (
@@ -214,7 +166,7 @@ function Header() {
         </Typography>
         <div className="mb-6 flex text-left h-2/3 overflow-y-auto border-b-[1px] border-gray-500">
           <ul className="divide-y divide-gray-200">
-            {mockData.map((item, index) => (
+            {cart.map((item, index) => (
               <li
                 key={index}
                 className="py-4 flex border-b-[1px] border-gray-300"

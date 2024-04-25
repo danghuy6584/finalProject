@@ -45,9 +45,9 @@ Deno.serve(async (req) => {
         enabled: false,
       },
       success_url:
-        'https://remix-cloudflare-workers.jonmeyers.workers.dev/success',
+        'http://localhost:5173/',
       cancel_url:
-        'https://remix-cloudflare-workers.jonmeyers.workers.dev/cancel',
+      'http://localhost:5173/',
     })
     console.log('🚀 ~ Deno.serve ~ session:', session)
 
