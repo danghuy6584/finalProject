@@ -10,12 +10,12 @@ import "swiper/swiper-bundle.css";
 import { useEffect } from "react";
 import { supabase } from "@/config/supabaseClient";
 import { useStripe } from "@stripe/react-stripe-js";
-import { useSelector } from "react-redux";
+import {  useSelector } from "react-redux";
 
 function Header() {
   let Links = [
     { name: "HOME", link: "/" },
-    { name: "SERVICE", link: "/" },
+    { name: "PROFILE", link: "/" },
   ];
   const stripe = useStripe();
   const cart = useSelector((state) => state.cart);
@@ -24,24 +24,26 @@ function Header() {
   const [openRight, setOpenRight] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dataUser, setDataUser] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
+      setIsLoading(true);
       try {
-        const res = JSON.parse(
-          localStorage.getItem("sb-sbopxwomrmjltrjvurhf-auth-token")
-        );
-        if (res) {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user) {
+          setIsLoading(false);
           setIsLoggedIn(true);
-          setDataUser(res);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
-
     fetchData();
   }, []);
+  console.log(isLoading);
   const openDrawerRight = () => setOpenRight(true);
   const closeDrawerRight = () => setOpenRight(false);
   const navigate = useNavigate();
@@ -132,7 +134,9 @@ function Header() {
           </li>
 
           <li className="md:ml-8 md:my-0 my-7 font-semibold">
-            {isLoggedIn ? (
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : isLoggedIn ? (
               <button
                 onClick={handleLogout}
                 className="btn bg-white text-[#447878] md:ml-8 font-semibold px-3 py-1 rounded duration-500 md:static"

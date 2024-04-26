@@ -8,6 +8,7 @@ export function Home() {
   return (
     <>
     <Header/>
+    
     <Banner/>
     <Outlet/>
     <Footer/>
