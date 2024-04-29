@@ -10,7 +10,7 @@ import "swiper/swiper-bundle.css";
 import { useEffect } from "react";
 import { supabase } from "@/config/supabaseClient";
 import { useStripe } from "@stripe/react-stripe-js";
-import {  useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 function Header() {
   let Links = [
@@ -19,12 +19,13 @@ function Header() {
   ];
   const stripe = useStripe();
   const cart = useSelector((state) => state.cart);
-
   let [open, setOpen] = useState(false);
   const [openRight, setOpenRight] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [dataUser, setDataUser] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     async function fetchData() {
@@ -34,16 +35,22 @@ function Header() {
           data: { user },
         } = await supabase.auth.getUser();
         if (user) {
+          setDataUser(user);
           setIsLoading(false);
           setIsLoggedIn(true);
         }
+        const total = cart.reduce((acc, item) => {
+          const price = parseFloat(item.price);
+          const quantity = parseInt(item.quantity);
+          return acc + price * quantity;
+        }, 0);
+        setTotal(total);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
     fetchData();
   }, []);
-  console.log(isLoading);
   const openDrawerRight = () => setOpenRight(true);
   const closeDrawerRight = () => setOpenRight(false);
   const navigate = useNavigate();
@@ -57,25 +64,51 @@ function Header() {
       console.error("Error signing out:", error.message);
     }
   };
-  console.log(cart);
   const handleCheckout = async () => {
-    const { data, error } = await supabase.functions.invoke("stripe", {
-      body: {
-        products: cart,
-      },
-    });
-    console.log(data);
-    if (data) {
-      const test = await stripe.redirectToCheckout({
-        sessionId: data.id,
-      });
-      console.log("🚀 ~ handleAddToCart ~ test:", test);
+    const { data: order, error } = await supabase
+      .from("order")
+      .insert([{ user_id: dataUser.id }])
+      .select();
+    if (order) {
+      const orderId = order[0].id;
+      const dataOrder = cart.map((item) => ({
+        menu_id: item._id,
+        quantity: item.quantity,
+        order_id: orderId,
+      }));
+      console.log(dataOrder);
+      const { data, error } = await supabase
+        .from("orderDetail")
+        .insert(dataOrder)
+        .select();
+      console.log(data, error);
     }
-    if (error) {
-      console.error("🚀 ~ handleAddToCart ~ error:", error);
+    // const { data, error } = await supabase.functions.invoke("stripe", {
+    //   body: {
+    //     products: cart,
+    //   },
+    // });
+    // console.log(data);
+    // if (data) {
+    //   const test = await stripe.redirectToCheckout({
+    //     sessionId: data.id,
+    //   });
+    //   console.log("🚀 ~ handleAddToCart ~ test:", test);
+    // }
+    // if (error) {
+    //   console.error("🚀 ~ handleAddToCart ~ error:", error);
+    // }
+  };
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
     }
   };
 
+  // Event handler for increment button
+  const handleIncrement = () => {
+    setQuantity(quantity + 1);
+  };
   return (
     <div className="shadow-md w-full fixed top-0 left-0 z-[99]">
       <div className="md:flex items-center justify-between bg-[#447878] py-4 md:px-10 px-7">
@@ -199,19 +232,20 @@ function Header() {
                   <div className="">
                     <label
                       for="quantity-input"
-                      class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
                       Choose quantity:
                     </label>
-                    <div class="relative flex items-center max-w-[8rem]">
+                    <div className="relative flex items-center max-w-[8rem]">
                       <button
                         type="button"
                         id="decrement-button"
+                        onClick={handleDecrement}
                         data-input-counter-decrement="quantity-input"
-                        class="bg-gray-100 hover:bg-gray-300 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+                        className="bg-gray-100 hover:bg-gray-300 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
                       >
                         <svg
-                          class="w-3 h-3 text-gray-900 dark:text-white"
+                          className="w-3 h-3 text-gray-900 dark:text-white"
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -231,18 +265,19 @@ function Header() {
                         id="quantity-input"
                         data-input-counter
                         aria-describedby="helper-text-explanation"
-                        class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="999"
+                        className="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        value={quantity}
                         required
                       />
                       <button
                         type="button"
                         id="increment-button"
+                        onClick={handleIncrement}
                         data-input-counter-increment="quantity-input"
-                        class="bg-gray-100 hover:bg-gray-300 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
+                        className="bg-gray-100 hover:bg-gray-300 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none"
                       >
                         <svg
-                          class="w-3 h-3 text-gray-900 dark:text-white"
+                          className="w-3 h-3 text-gray-900 dark:text-white"
                           aria-hidden="true"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -266,12 +301,12 @@ function Header() {
         </div>
         <div className="checkout w-full">
           <h3 className="float-left">
-            Total : <span className="float-right">300</span>
+            Total : <span className="float-right">{total}$</span>
           </h3>
           <button
             type="button"
             onClick={handleCheckout}
-            class="w-full text-center  text-white bg-[#f48220] hover:bg-[#f48220]/90 focus:ring-4 focus:outline-none focus:ring-[#f48220]/50 font-medium rounded-lg text-sm px-5 py-2.5  items-center dark:focus:ring-[#f48220]/50 me-2 mb-2"
+            className="w-full text-center  text-white bg-[#f48220] hover:bg-[#f48220]/90 focus:ring-4 focus:outline-none focus:ring-[#f48220]/50 font-medium rounded-lg text-sm px-5 py-2.5  items-center dark:focus:ring-[#f48220]/50 me-2 mb-2"
           >
             CHECK OUT
           </button>
